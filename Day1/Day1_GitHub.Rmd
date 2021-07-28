@@ -1,0 +1,73 @@
+---
+title: "Getting Started"
+date: "2021-07-21"
+output:
+  html_document:
+    theme: spacelab
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Background  
+The goal for this course is to help get you started learning to manage, transform, and visualize data using the R programming language. You will learn to clearly and neatly organize messy data, transform it in ways that address your questions, and communicate results in a variety of formats. The course is designed assuming **little to no prior programming experience**. There is a substantial learning curve but, working together, we should be able to make learning R easier, interesting, and fun.  
+
+## First steps  
+It is really important that you understand the basics of getting started in R. We will calibrate to our levels in the course over the next few weeks, which means at times it we'll need to adjust to go a bit faster/slower; the goal is to minimize frustration and maximize what you take away. With time, it will get easier, and your comfort and willingness to experiment will grow!
+
+## Resources  
+Given that R is open source, many resources are available online. We will use a combination of resources in the class, but key items are listed below.  
+
+- [Joel Ledford's YouTube Channel](https://www.youtube.com/channel/UCFX-MipGKF9jCEXaP-59BzQ)  
+- [R for data science](https://r4ds.had.co.nz/)
+- [R cheatsheets](https://www.rstudio.com/resources/cheatsheets/)
+- [RStudio keyboard shortcuts](https://support.rstudio.com/hc/en-us/articles/200711853-Keyboard-Shortcuts)
+
+
+## Setup your computer  
+Because we will be working remotely, it is very important that you spend time making sure that your computer is set-up and ready to go. You should have already downloaded the latest versions of R and R studio, and we advise doing the same thing for Zoom. On occasion, all that's blocking something from working is an update, so keep this tip in your back pocket.
+
+## GitHub  
+[GitHub](http://www.github.com) is a file storage and management site used by programmers. Programmers upload code to repositories (folders) and make it publicly available. We will use Github to share work with one another.
+
+## Your GitHub account  
+Since we will use GitHub for assignments, you need to make a personal account. Navigate to GitHub and create a free account.
+
+
+## Make Your Own Repository  
+1. Go to [github.com](www.github.com) and login.  
+2. Create a new repository.  
+3. Under repository name, use the title `REALRCN2021_your first initial and lastname`. Mine looks like this: REALRCN2021_EWeigel
+4. Default settings are fine, but do click "Initialize this repository with a README".    
+5. Once the repository is made, click on settings in the top right.  
+6. On the left toolbar click "Manage access".  
+7. Add "choosyfemale" and "robertmerdmann" as collaborators. Repeat for others you'd like to have access.  
+
+## GitHub Desktop  
+The easiest way to manage your GitHub repository is to use [GitHub desktop](https://desktop.github.com/). This is a helpful tool that will allow you to manage all of your files. Install and open the program, and login using your GitHub account.  
+
+## Clone Your Repository  
+In GitHub desktop, you will see your personal repository as an option under `clone repository`. Clone your repository to the desktop. Once you have done this any changes you make to files will be recorded and easily uploaded. Do not move this folder from your desktop.  
+
+## Clone or Copy the Class Repository
+In order to keep track of the class files, the last thing you need to do is make a copy of the class repository. We will make regular changes and updates to the class repository including the addition of files and data that you will need. You can either use the clone option above, or simply download a copy of any items you need directly from GitHub.
+
+The class repository can be found at robertmerdmann/REALshortcourse_Summer2021.
+
+Copy the `Day1` folder from the class repository and paste it into your personal repository. By doing this, you have created your own copies of lab materials for Day 1.  If you used the clone approach, you should be able to find the files in /Documents/Github on your computer.   
+
+## Using GitHub  
+You will use your repository to store all of your notes and work. There are three terms that we need to define:  
+1. `Commit` saves a snapshot of your current progress.    
+2. `Pull` this is the same as download.     
+3. `Push` this is the same as upload.    
+
+If you setup [GitHub desktop](https://desktop.github.com/), then you will see that it automatically tracks your changes. Clicking the `Commit to master` button in the bottom left corner means that you are recording a snapshot of your edits locally. Once this is done, you need to upload your changes to GitHub. This is done by clicking `Push origin`. Once you have pushed your changes you can double check by looking at your repository on github.com.    
+
+## That's it! 
