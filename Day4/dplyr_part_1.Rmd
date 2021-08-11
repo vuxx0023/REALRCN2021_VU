@@ -1,0 +1,170 @@
+---
+title: "Transforming data 2: `select()`"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    theme: spacelab
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+---
+
+## Learning Goals
+*At the end of these exercises, you will be able to:*    
+1. Use the package `here` to load data.  
+2. Use the package `janitor` to the clean names of variables.  
+3. Use `select()` to extract columns of interest from a dataframe.  
+
+## Questions
+If you have question or need help with a specific problem, please [email me](mailto: jmledford@ucdavis.edu).  
+
+## R Speak Glossary  
+People that use R frequently aren't normal; they use confusing terms to refer to "normal" things. Here is a helpful list.  
+
++ dataframe= spreadsheet  
++ call= load  
++ library= collection of useful R packages  
++ variable= in reference to dataframe, usually a column name  
+
+## Tidyverse
+The [tidyverse](www.tidyverse.org) is an "opinionated" collection of packages that make workflow in R easier. The packages operate more intuitively than base R commands and share a common organizational philosophy. `ggplot` is part of the tidyverse.    
+![*Data Science Workflow in the Tidyverse.*](tidy-1.png)  
+
+## Load the tidyverse  
+```{r}
+library("tidyverse")
+```
+
+## Load the data  
+A common issue when learning and teaching R is loading data. The problems are usually related to directory issues; i.e. R cannot "see" the file you are trying to load because you are not looking in the correct directory. The package `here` is written to help solve these problems.  
+
+Let's start by installing the package.  
+```{r}
+#install.packages("here")
+```
+
+Now, load the library.  
+```{r}
+library("here")
+```
+
+Notice that when you load `here`, it tells you exactly where you are; this is why I always keep the package in a separate library call.  
+
+## Please also install and load `janitor`(https://garthtarr.github.io/meatR/janitor.html)
+```{r}
+#install.packages("janitor")
+```
+
+```{r}
+library("janitor")
+```
+
+## Load the data
+The dataset we will use are simulated data made by Rob Furrow. They are representative of the kind of data we would work with in education research. The most important thing is that there is a mix of discrete and continuous variables. Let's load the data using `here`.  
+```{r}
+edu_dat <- read_csv(here("data", "workshop_wide.csv"))
+```
+
+## Data Structure
+Once data have been uploaded, let's get an idea of its structure, contents, and dimensions. I don't like that one of the variables is in ALL CAPS. This is where `janitor` comes in to play.  
+```{r}
+glimpse(edu_dat)
+```
+
+```{r}
+names(edu_dat)
+```
+
+```{r}
+edu_dat <- read_csv(here("data", "workshop_wide.csv")) %>% clean_names()
+```
+
+Notice that all variable names are now lower case. `janitor` will also fix a lot of other issues, so I always include it as part of my initial loading of the data.  
+```{r}
+names(edu_dat)
+```
+
+## dplyr
+The first package that we will use  is `dplyr`. `dplyr` is used to transform data frames by extracting, rearranging, and summarizing data. This is very helpful, especially when wrangling large data, and makes dplyr one of most frequently used packages in the tidyverse. The two functions we will use most are `select()` and `filter()`.  
+
+## `select()`
+Select allows you to pull out columns of interest from a dataframe. To do this, just add the names of the columns to the `select()` command. The order in which you add them, will determine the order in which they appear in the output.
+```{r}
+names(edu_dat)
+```
+
+We are only interested in id, admit_level, final_exam.
+```{r}
+final_exam <- select(edu_dat, "id", "admit_level", "final_exam")
+final_exam
+```
+
+To add a range of columns use `start_col:end_col`.
+```{r}
+likert <- select(edu_dat, "id", likert1_pre:likert4_post)
+likert
+```
+
+The - operator is useful in select. It allows us to select everything except the specified variables.
+```{r}
+select(edu_dat, -peer)
+```
+
+You can also select columns based on the class of data.  
+```{r}
+select_if(edu_dat, is.numeric)
+```
+
+For very large data frames with lots of variables, `select()` utilizes lots of different operators to make things easier. Let's say we are only interested in the variables that deal with length.
+```{r}
+select(edu_dat, "id", contains("mc"))
+```
+
+There are many options that can be helpful, especially when working with large dataframes.  
+
+Options to select columns based on a specific criteria include:  
+1. starts_with() = Select columns that end with a character string 
+2. ends_with() = Select columns that end with a character string  
+3. contains() = Select columns that contain a character string  
+4. matches() = Select columns that match a regular expression  
+5. one_of() = Select columns names that are from a group of names  
+
+## Practice  
+1. Assess the structure of `edu_dat` and list the names of the columns. Are there any NA's in the data?
+```{r}
+
+```
+
+```{r}
+
+```
+
+2. We are interested in learning whether or not there is a correlation between the score on the final exam vs. prior gpa or class standing. Use select to build a new dataframe that only includes these variables. Store them as a new object called 'final_exam_correlation`.  
+```{r}
+
+```
+
+3. We are interested in building a new dataframe that is focused on pre- assessment data for all students. Make a new dataframe that only includes variables that contain the term "pre".
+```{r}
+
+```
+
+## Aside from aesthetics or very large data, why would you use `select()`?  
+Depending on who is the ultimate stakeholder for your analysis, simplyfing the data can focus attention. I also use it as a check when building plots; i.e. in order to make a plot you need an `x` and a `y`. By using select, you can be sure that you are asking R to do something that it can interpret.  
+
+Use select to focus the data on the variables gpa_prior and final_exam only. Then, make a scatterplot that shows this relationship.  
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+## That's it!  
+There are lots of uses for `select()` depending on the type and scale of data that you are working with, so please look at the [data transformation cheetsheet](https://www.rstudio.com/resources/cheatsheets/) if you have questions.

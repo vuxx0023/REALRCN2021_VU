@@ -1,0 +1,132 @@
+---
+title: "Transforming data 2: `filter()`"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    theme: spacelab
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+---
+
+## Learning Goals  
+*At the end of this exercise, you will be able to:*    
+1. Use the functions of dplyr (filter, select, arrange) to organize and sort data frames.  
+
+## Questions
+If you have question or need help with a specific problem, please [email me](mailto: jmledford@ucdavis.edu).  
+
+## Review  
+In our previous meeting, we used `select()` to extract columns of interest from a data frame. This helps us focus our attention on the variables relevant to our question. However, it doesn't allow us to extract observations from within the data frame. The `filter()` function allows us to extract data that meet specific criteria. When combined with `select()`, we have the power to transform, shape, and explore data with the potential to make new discoveries.  
+
+## Load the `tidyverse` and `janitor`
+```{r message=FALSE, warning=FALSE}
+library("tidyverse")
+library("janitor")
+```
+
+## Load `here` separately so you know your directory  
+```{r}
+library("here")
+```
+
+## Load the data
+For these exercises we will use the data from the previous meeting.
+```{r}
+
+```
+
+## `filter()`
+Unlike `select()`, `filter()` allows us to extract data that meet specific criteria within a variable. Let's say that we are only interested only in observations for the year 2019. We can use `filter()` to extract these observations.
+```{r}
+glimpse(edu_dat)
+```
+
+First question- what years are represented in the data?  
+```{r}
+
+```
+
+```{r}
+filter(edu_dat, year=="2019")
+```
+
+Similarly, if we are only interested in students with a final exam score greater than or equal to 70 we can use `filter()` to extract these observations.  
+```{r}
+filter(edu_dat, final_exam >= 70)
+```
+
++ `filter()` allows all of the expected operators; i.e. >, >=, <, <=, != (not equal), and == (equal).  
+
+## Using `filter()` on multiple conditions
+You can also use `filter()` to extract data based on multiple conditions. Below we extract only the students from 2019 with a final exam score greater or equal to than 70.
+```{r}
+filter(edu_dat, year == 2019 & final_exam >= 70)
+```
+
+Notice that the `|` operator generates a different result.
+```{r}
+filter(edu_dat, year == 2019 | final_exam >= 70)
+```
+
+Rules:  
++ `filter(condition1, condition2)` will return rows where both conditions are met.  
++ `filter(condition1, !condition2)` will return all rows where condition one is true but condition 2 is not.  
++ `filter(condition1 | condition2)` will return rows where condition 1 and/or condition 2 is met.  
++ `filter(xor(condition1, condition2)` will return all rows where only one of the conditions is met, and not when both conditions are met.  
+
+## Practice in the chat
+Filter out the students from 2019 with a prior gpa greater than or equal to 2 AND a final exam score greater than 70.
+```{r}
+
+```
+
+## Using `filter()` for multiple observations within the same variable 
+Filtering multiple values within the same variable requires the `%in%` [operator](https://www.tutorialspoint.com/r/r_operators.htm).    
+```{r}
+filter(edu_dat, gpa_prior %in% c(2.5, 3.0))
+```
+
+Alternatively, you can use `between` if you are looking for a range of specific values.  
+```{r}
+filter(edu_dat, between(gpa_prior, 2.5, 3.0))
+```
+
+You can also extract observations "near" a certain value but you need to specify a tolerance.  
+```{r}
+filter(edu_dat, near(gpa_prior, 3, tol = 0.2))
+```
+
+## Practice
+1. Transform the data to only include final exam scores for freshmen.
+```{r}
+
+```
+
+Feeling fancy? Use the output to make a barplot that shows counts by final exam score.
+```{r}
+
+```
+
+2. Do we have any struggling freshmen? Transform the data to only include freshmen with a gpa less 2.5.
+```{r}
+
+```
+
+3. Filter the data to include transfers from 2016 with a gpa between 3.5-4.0.
+```{r}
+
+```
+
+4. Your department chair is interested in a comparison of enrollment between class 1 and class 2 for each year represented in the data. How would you show this as a summary and on a plot?
+```{r}
+
+```
+
+```{r}
+
+```
+
+## That's it!  
+`filter()` is a powerful tool for reshaping your data by extracting values of interest. When used in combination with `select()`, you innumerable ways to transform your data.
