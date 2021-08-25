@@ -1,0 +1,192 @@
+---
+title: "Transforming data continued: `mutate()`, `if_else()`, and `summarize()`"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    theme: spacelab
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+---
+
+## Learning goals
+*At the end of this lesson, you should be able to:*    
+1. Use a combination of `select()`, `mutate()`, and `if_else()` to transform data frames.  
+2. Produce clean summaries of data using `summarize()`.  
+3. Use `group_by()` in combination with `summarize()` to produce grouped summaries of data.  
+
+## Questions
+If you have question or need help with a specific problem, please [email me](mailto: refurrow@ucdavis.edu).  
+
+## Load the tidyverse  
+```{r}
+library("tidyverse")
+```
+
+## Load the data  
+Today we'll load the data directly. We'll again work with the simulated education dataset `workshop_wide.csv`. The code below should work when run directly from the `mutate_summarize.Rmd` file using the green right-arrow in each code chunk. The Rmd file should be in the Day6 folder, which should also contain a folder called "data". If you try to run today's code directly in the Console on the lower left of your screen/monitor, make sure that your working directory is the Day6 folder, wherever you have put that. 
+ 
+```{r}
+edu_dat <- read_csv("data/workshop_wide.csv")
+```
+
+## Creating new (useful) variables
+Let's take a quick look at our data to refresh our memory.
+
+```{r}
+glimpse(edu_dat)
+```
+
+We can see that our multiple choice questions (names starting with `mc1` or `mc2`) are just the raw student responses. However, we are interested in knowing how many students got these questions correct at different time points and/or in different courses.  We will take advantage of an approach we first explored last week when using the `filter()` function. If you recall, the double equals sign `==` was a way of asking a question about a variable (e.g. is `admit_level` equal to "Freshman").  We can use a similar approach to create a new variable that converts multiple choice answers (A, B, C, D) to a TRUE/FALSE based on correctness.
+
+For `mc1`, the correct answer is "C". We will use a useful `dplyr` function called `mutate()` to make a new variable. Let's look at the code first, then break down what it's doing.
+
+```{r}
+edu_dat %>%
+  select(mc1_pre) %>%
+  mutate(mc1_pre_tf = (mc1_pre == "C"))
+```
+Take a look at these data. What is this new column `mc1_pre_tf`?  In this code we have the chunk `(mc1_pre == "C")`.  What does that chunk do?
+
+
+## Coding together 
+
+Let's now write the same code, except mutating `mc2_pre` to create a TRUE/FALSE (i.e. correct/incorrect) variable. For multiple choice question 2 (mc2), the correct answer is "A".
+
+```{r}
+
+```
+
+
+## Quick solo practice
+
+Let's transform a different variable. Select the `final_exam` column, then use `mutate` to create a new variable called `final_exam_perc` that is `final_exam/100`.
+
+```{r}
+
+```
+
+
+## `mutate()` combined with `ifelse()`
+
+Fantastic! We now have a great tool, `mutate()`, for changing variables into more useful forms.  Now let's work on summarizing these data. 
+
+But we have one issue to deal with first. Let's take a quick look at the general student responses to the multiple choice question 1 (`mc1`).
+
+```{r}
+edu_dat %>%
+  count(mc1_pre)
+```
+
+Our data are messy.  Managing `NA` in R is pretty natural, but when we downloaded our data from Qualtrics, some of the missing responses became `-99`.  (Note, this is a real issue when going from Qualtrics to Excel.)  We want all of these `-99` values to be assigned `NA` as well. We can use a function called `ifelse()` to quickly find values meeting a certain condition and replace them.
+
+```{r, eval=FALSE}
+edu_dat %>%
+  select(mc1_pre) %>%
+  mutate(mc1_pre_clean = ifelse(mc1_pre == "-99", NA, mc1_pre)) %>%
+  count(mc1_pre_clean)
+```
+
+Perfect. Before, we were mistakenly counting those `-99` values as though they were a wrong student answer. But in fact those values represent missing data, which is neither right nor wrong. So it's better to turn them into `NA` values that can easily be excluded from later calculations.
+
+Let's put this all together to summarize the average number of correct responses, both pre and post.
+
+
+```{r}
+
+```
+
+Okay, let's make sense of these data.  Which mean is higher?  What does that tell us about how students are performing on this multiple choice question?
+
+`summarize()` probably feels pretty similar to `mutate()`.  Note that `mutate()` was used to create new variables (i.e. new columns) for the same data.  But `summarize()` allows you to use functions like `mean()` that produce a smaller summary of the data with only a small number of values. The end result of `summarize()` is not a large data frame with the same number of observations (rows) as your original.
+
+
+***But wait, there's more.***  One of the most powerful features of the `summarize()` function is that you can use the `group_by()` function to group by other variables as well.  In this case, you might be interested in whether we see similar improvements for students taking both courses, or if more students improved in one of the courses. Together we can slightly modify the code above to including this grouping.
+
+```{r}
+
+```
+
+***How do these results differ from what we looked at just before this?***
+
+## Practice part 1
+1. **Investigating the `admit_level` variable.** Use `count()` to see the different student responses for the `admit_level` variable.  
+```{r}
+
+```
+
+You may have noticed that we have "Freshman", "Transfer", "No Record", and `NA`. For our purposes, "No Record" is equivalent to `NA` -- either one represents missing data. Use `mutate()` combined with `ifelse()` to make a new variable called `admit_level_clean` that turns any "No Record" responses into `NA`.
+
+```{r}
+
+```
+
+Finally, use `summarize()`, `mean()`, and `group_by()` to create a `mean_gpa` summary variable that summarizes the average prior gpa (`gpa_prior`) between transfer and non-transfer students.
+
+```{r}
+
+```
+
+
+## Back to whole-group discussion
+
+**Quick note.** The `group_by()` function is most commonly used in combination with `summarize()`, but it works with some other functions as well.  Let's combine it with `count()` to count the number of transfer students vs. non-transfer students in our two courses.
+
+```{r}
+edu_dat %>%
+  select(course,admit_level) %>%
+  group_by(course) %>%
+  count(admit_level)
+```
+
+***Thought question: what data would we get if grouped by `admit_level` and counted by `course`?***
+
+Note also that you can group by multiple variables at once.  Let's do that to create a summary of some course demographics.
+
+```{r}
+edu_dat %>%
+  select(course, admit_level, PEER, gender) %>%
+  group_by(admit_level, PEER, gender) %>%
+  count(course)
+```
+
+
+This has been a lot of new tools. Let's end today's session with some more practice.
+
+
+## Practice part 2
+
+1. **Fix this code.** I've heard anecdotally that transfer students have struggled to learn as effectively in these courses, particularly in course 1.  My very imperfect way of checking this is to look multiple choice question 2, both pre- and post-course, and see what fraction of students got it correct. I wrote my code below, but it just won't run!!! ***There are three errors*** preventing this code from running properly. Please find and correct them, then run the code and see what you find.
+
+```{r, eval=FALSE}
+edu_dat %>%
+  select(mc2_pre, mc2_post, Course, admit_level) %>%
+  mutate(mc2_pre_clean = ifelse(mc2_pre = "-99", NA, mc2_pre),
+         mc2_post_clean = ifelse(mc2_post = "-99", NA, mc2_post)) %>%
+  mutate(mc2_pre_tf = (mc2_pre_clean == "A"),
+         mc2_post_tf = (mc2_post_clean == "A"))
+  group_by(course, admit_level) %>%
+  summarize(mean_pre = mean(mc2_pre_tf,na.rm = TRUE),
+            mean_post = mean(mc2_post_tf,na.rm = TRUE))
+```
+
+***Do these data support the anecdotes that I have heard? Why or why not?***
+
+
+2. **Are these multiple choice questions meaningful?** Let's start with our code similar to our initial investigation of `mc1`, but select only `gpa_prior` and `mc1_pre`. Let's try something a little different, and see the relationship between the `final_exam` score and getting question `mc1` right.  Building on the code below, use `group_by()` to group by `mc1_post_tf` and then use `summarize()` and `mean()` to compare the average final exam scores among these groups. 
+
+```{r}
+# add lines to this code to get the summary requested above
+edu_dat %>%
+  select(final_exam,mc1_post) %>%
+  mutate(mc1_post_tf = (mc1_post == "C"))
+```
+
+***Pause and make sure you can state these results in a single-sentence. ***
+
+**Challenge/review.** We've thrown away a lot of data by only looking at the mean. Write code below to create a box plot where the x-axis is the TRUE/FALSE/NA value for `mc1_post_tf` and the y-axis is `final_exam`.  The `ggplot()` geometry for this is `geom_boxplot()`.
+
+```{r}
+
+```

@@ -63,7 +63,7 @@ library("janitor")
 ## Load the data
 The dataset we will use are simulated data made by Rob Furrow. They are representative of the kind of data we would work with in education research. The most important thing is that there is a mix of discrete and continuous variables. Let's load the data using `here`.  
 ```{r}
-edu_dat <- read_csv(here("data", "workshop_wide.csv"))
+edu_dat <- read_csv(here("Day4/data", "workshop_wide.csv"))
 ```
 
 ## Data Structure
@@ -77,7 +77,7 @@ names(edu_dat)
 ```
 
 ```{r}
-edu_dat <- read_csv(here("data", "workshop_wide.csv")) %>% clean_names()
+edu_dat <- read_csv(here("day4/data", "workshop_wide.csv")) %>% clean_names()
 ```
 
 Notice that all variable names are now lower case. `janitor` will also fix a lot of other issues, so I always include it as part of my initial loading of the data.  
@@ -133,8 +133,10 @@ Options to select columns based on a specific criteria include:
 ## Practice  
 1. Assess the structure of `edu_dat` and list the names of the columns. Are there any NA's in the data?
 ```{r}
-
+glimpse(edu_dat)
 ```
+
+NA? Yes
 
 ```{r}
 
@@ -142,12 +144,13 @@ Options to select columns based on a specific criteria include:
 
 2. We are interested in learning whether or not there is a correlation between the score on the final exam vs. prior gpa or class standing. Use select to build a new dataframe that only includes these variables. Store them as a new object called 'final_exam_correlation`.  
 ```{r}
-
+final_exam_correlation <- select(edu_dat, "gpa_prior",  "final_exam")
+final_exam_correlation
 ```
 
 3. We are interested in building a new dataframe that is focused on pre- assessment data for all students. Make a new dataframe that only includes variables that contain the term "pre".
 ```{r}
-
+select(edu_dat, contains("pre"))
 ```
 
 ## Aside from aesthetics or very large data, why would you use `select()`?  
@@ -155,11 +158,14 @@ Depending on who is the ultimate stakeholder for your analysis, simplyfing the d
 
 Use select to focus the data on the variables gpa_prior and final_exam only. Then, make a scatterplot that shows this relationship.  
 ```{r}
-
+edu_dat %>% select(gpa_prior, final_exam)
 ```
 
 ```{r}
-
+edu_dat %>% 
+  na.omit %>% 
+  select(gpa_prior, final_exam) %>% 
+  ggplot(aes(gpa_prior, final_exam)) + geom_point()
 ```
 
 ```{r}
